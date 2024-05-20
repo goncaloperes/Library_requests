@@ -37,12 +37,12 @@ get all the information we need from this object.
 Requests' simple API means that all forms of HTTP request are as obvious. For
 example, this is how you make an HTTP POST request::
 
-    >>> r = requests.post('https://httpbin.org/post', data = {'key':'value'})
+    >>> r = requests.post('https://httpbin.org/post', data={'key': 'value'})
 
 Nice, right? What about the other HTTP request types: PUT, DELETE, HEAD and
 OPTIONS? These are all just as simple::
 
-    >>> r = requests.put('https://httpbin.org/put', data = {'key':'value'})
+    >>> r = requests.put('https://httpbin.org/put', data={'key': 'value'})
     >>> r = requests.delete('https://httpbin.org/delete')
     >>> r = requests.head('https://httpbin.org/get')
     >>> r = requests.options('https://httpbin.org/get')
@@ -129,7 +129,7 @@ You can also access the response body as bytes, for non-text requests::
 The ``gzip`` and ``deflate`` transfer-encodings are automatically decoded for you.
 
 The ``br``  transfer-encoding is automatically decoded for you if a Brotli library
-like `brotli <https://pypi.org/project/brotli>`_ or `brotlicffi <https://pypi.org/project/brotli>`_ is installed.
+like `brotli <https://pypi.org/project/brotli>`_ or `brotlicffi <https://pypi.org/project/brotlicffi>`_ is installed.
 
 For example, to create an image from binary data returned by a request, you can
 use the following code::
@@ -177,7 +177,7 @@ server, you can access ``r.raw``. If you want to do this, make sure you set
     <urllib3.response.HTTPResponse object at 0x101194810>
 
     >>> r.raw.read(10)
-    '\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\x03'
+    b'\x1f\x8b\x08\x00\x00\x00\x00\x00\x00\x03'
 
 In general, however, you should use a pattern like this to save what is being
 streamed to a file::
@@ -200,6 +200,8 @@ may better fit your use cases.
    transform the response content.  If you really need access to the bytes as they
    were returned, use ``Response.raw``.
 
+
+.. _custom-headers:
 
 Custom Headers
 --------------
@@ -237,7 +239,7 @@ dictionary of data will automatically be form-encoded when the request is made::
 
     >>> payload = {'key1': 'value1', 'key2': 'value2'}
 
-    >>> r = requests.post("https://httpbin.org/post", data=payload)
+    >>> r = requests.post('https://httpbin.org/post', data=payload)
     >>> print(r.text)
     {
       ...
@@ -283,8 +285,12 @@ For example, the GitHub API v3 accepts JSON-Encoded POST/PATCH data::
 
     >>> r = requests.post(url, data=json.dumps(payload))
 
-Instead of encoding the ``dict`` yourself, you can also pass it directly using
-the ``json`` parameter (added in version 2.4.2) and it will be encoded automatically::
+Please note that the above code will NOT add the ``Content-Type`` header
+(so in particular it will NOT set it to ``application/json``).
+
+If you need that header set and you don't want to encode the ``dict`` yourself,
+you can also pass it directly using the ``json`` parameter (added in version 2.4.2)
+and it will be encoded automatically:
 
     >>> url = 'https://api.github.com/some/endpoint'
     >>> payload = {'some': 'data'}
@@ -292,8 +298,6 @@ the ``json`` parameter (added in version 2.4.2) and it will be encoded automatic
     >>> r = requests.post(url, json=payload)
 
 Note, the ``json`` parameter is ignored if either ``data`` or ``files`` is passed.
-
-Using the ``json`` parameter in the request will change the ``Content-Type`` in the header to ``application/json``.
 
 POST a Multipart-Encoded File
 -----------------------------
@@ -564,6 +568,3 @@ All exceptions that Requests explicitly raises inherit from
 -----------------------
 
 Ready for more? Check out the :ref:`advanced <advanced>` section.
-
-
-If you're on the job market, consider taking `this programming quiz <https://triplebyte.com/a/b1i2FB8/requests-docs-1>`_. A substantial donation will be made to this project, if you find a job through this platform.
